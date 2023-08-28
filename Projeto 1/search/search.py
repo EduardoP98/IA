@@ -87,22 +87,68 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    # Cria Conjunto de elementos únicos para controlar nós já processados
-     = set()
-    # Cria pilha
-    pilha = util.Stack()
-    return lista()
+    # Conjunto para registrar estados visitados
+    processados = set() 
+
+    # Pilha para explorar estados
+    pilha = util.Stack()  
+    
+    # Adicione estado inicial à pilha
+    pilha.push((problem.getStartState(), []))  
+
+    while not pilha.isEmpty():
+        # Retire o estado e as ações da pilha
+        estado, actions = pilha.pop()  
+
+        if estado in processados:
+            continue  
+
+        processados.add(estado)  
+
+        # Verifica se Estado == Objetivo
+        if problem.isGoalState(estado):
+            return actions  
+
+        successors = problem.getSuccessors(estado)
+        for successor, action, _ in successors:
+            pilha.push((successor, actions + [action])) 
+    return []
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Conjunto para registrar estados visitados
+    processados = set() 
+    fila = util.Queue()
+    fila.push((problem.getStartState(),[]))
+
+    while not fila.isEmpty():
+        estado_tupla = fila.pop()
+        estado, actions = estado_tupla
+
+
+        if estado in processados:
+            continue
+        processados.add(estado)
+
+        # Verifica se Estado == Objetivo
+        if problem.isGoalState(estado):
+            return actions 
+
+        successors = problem.getSuccessors(estado)
+        for successor, action, _ in successors:
+            if successor not in processados:
+                fila.push((successor, actions + [action])) 
+
+    return []
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    # Conjunto para registrar estados visitados
+    processados = set() 
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """

@@ -38,6 +38,7 @@ from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
 from game import Actions
+from util import manhattanDistance
 import util
 import time
 import search
@@ -296,14 +297,17 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (self.startingPosition, False, False, False, False)
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        for valor in state[1:]:
+            if valor is False:
+                return False
+        return True
 
     def getSuccessors(self, state: Any):
         """
@@ -326,6 +330,19 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x, y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty] 
+            if hitsWall is False:
+                boolean = []
+                for i in range(len(self.corners)):
+                    valor = ((nextx, nexty)==self.corners[i]) or\
+                               state[i+1]
+                    boolean.append(valor)
+                state_next = ((nextx, nexty), boolean[0], boolean[1],\
+                              boolean[2], boolean[3])
+                successors.append((state_next, action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -361,7 +378,18 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    # Inicializa Valor da Heuristica
+    heuristic_value = 0
+
+    #Itera os cantos, verificando se se já foram visitados
+    for i in range(len(corners)):
+        if state[i+1] is False:
+
+            # Calcula a distância de Manhattan entre a posição atual e o canto utilizando a Função disponibilizada em util.py
+            dist_canto = manhattanDistance(state[0], corners[i])
+            heuristic_value = max(heuristic_value, dist_canto)
+
+    return heuristic_value # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

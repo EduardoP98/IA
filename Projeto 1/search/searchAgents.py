@@ -447,6 +447,21 @@ class FoodSearchProblem:
             cost += 1
         return cost
 
+#Nova classe para guardar informações de estado
+class Novo_Estado:
+    def __init__(self, estado, paredes):
+        self.estado = estado # Guarda Estado do PacMan
+        self.paredes = paredes # Guarda informações das paredes do  Tabuleiro
+    
+    #Retorna Posição do PacMan
+    def getPacmanPosition(self):
+        return self.estado
+
+    #Retorna Estado das paredes
+    def getWalls(self):
+        return self.paredes
+    
+
 class AStarFoodSearchAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
@@ -483,7 +498,15 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    heuristic_value = 0
+    # Encontra todas as posições de comida no Tabuleiro do jogo
+    pos_comida = [(j, i) for i in range(foodGrid.height) for j in range(foodGrid.width) if foodGrid[j][i]]
+
+    # Calcula a distância máxima entre o Pacman e as posições de comida usando a função mazeDistance
+    heuristic_value = max([mazeDistance(pos, position, Novo_Estado(state, problem.walls)) for pos in pos_comida], default=0)
+
+    return heuristic_value
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

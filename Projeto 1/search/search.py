@@ -146,7 +146,7 @@ def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
-     # Conjunto para registrar estados visitados
+    # Conjunto para registrar estados visitados
     processados = set()
     
     #Cria fila com Prioridade
@@ -189,8 +189,11 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-
+    
+    # Conjunto para registrar estados visitados
     processados = set()
+
+    #Cria fila com Prioridade
     fila = util.PriorityQueue()
     estado_inicial = problem.getStartState()
     fila.push((estado_inicial, [], 0, heuristic(estado_inicial, problem)),

@@ -92,7 +92,7 @@ def depthFirstSearch(problem: SearchProblem):
 
     # Pilha para explorar estados
     pilha = util.Stack()  
-    
+
     # Adicione estado inicial à pilha
     pilha.push((problem.getStartState(), []))  
 
@@ -119,14 +119,14 @@ def breadthFirstSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     # Conjunto para registrar estados visitados
     processados = set() 
+
+    #Cria Fila 
     fila = util.Queue()
     fila.push((problem.getStartState(),[]))
 
     while not fila.isEmpty():
-        estado_tupla = fila.pop()
-        estado, actions = estado_tupla
-
-
+        estado, actions = fila.pop()
+        
         if estado in processados:
             continue
         processados.add(estado)
@@ -145,9 +145,38 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    # Conjunto para registrar estados visitados
-    processados = set() 
-    util.raiseNotDefined()
+
+     # Conjunto para registrar estados visitados
+    processados = set()
+    
+    #Cria fila com Prioridade
+    fila = util.PriorityQueue()
+
+    # Inicializa com custo 0
+    fila.push((problem.getStartState(), [], 0), 0)  
+
+    while not fila.isEmpty():
+        estado, actions, custo = fila.pop()
+
+        # Verifica se Estado == Objetivo
+        if problem.isGoalState(estado):
+            return actions
+
+        if estado in processados:
+            continue
+
+        processados.add(estado)
+
+        # Itera sobre os sucessores do estado atual
+        for successor, action, custo_atual in problem.getSuccessors(estado):
+            if successor not in processados:
+                novas_actions = actions + [action]
+                novo_custo = custo + custo_atual
+                fila.push((successor, novas_actions, novo_custo), novo_custo)
+
+    return []
+
+
 
 
 def nullHeuristic(state, problem=None):
@@ -160,7 +189,37 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    processados = set()
+    fila = util.PriorityQueue()
+    estado_inicial = problem.getStartState()
+    fila.push((estado_inicial, [], 0, heuristic(estado_inicial, problem)),
+              heuristic(estado_inicial, problem))
+
+    while not fila.isEmpty():
+        estado, actions, custo, h = fila.pop()
+
+        # Verifica se Estado == Objetivo
+        if problem.isGoalState(estado):
+            return actions
+
+        if estado in processados:
+            continue
+
+        processados.add(estado)
+
+        # Itera sobre os sucessores do estado atual
+        for successor, action, custo_atual in problem.getSuccessors(estado):
+            if successor not in processados:
+                novo_custo = custo + custo_atual
+                novo_h = heuristic(successor, problem)
+                total_prioridade = novo_custo + novo_h
+                novas_actions = actions + [action]
+                fila.push((successor, novas_actions, novo_custo, novo_h),
+                          total_prioridade)
+
+    return []
+
 
 
 # Abbreviations
